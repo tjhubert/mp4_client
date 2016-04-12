@@ -1,0 +1,64 @@
+<div class="list" id="user-list" ng-controller='UserListController'>
+  <div class="row">
+    <div class="columns small-12 small-centered text-right">
+      <button ng-hide="shouldShowTaskForm" class="success button new-task-button"><i class="fi-plus"></i> Add new user</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="small-12 small-centered columns">
+      <table class="hover">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- <tr>
+            <td colspan="3">
+            <form data-abide ng-show="shouldShowUserForm">
+              <div data-abide-error class="alert callout" style="display: none;">
+    <p><i class="fi-alert"></i> There are some errors in your form.</p>
+  </div>
+              <div class="row">
+                <div ng-click=toggleUserForm() class="medium-12 columns text-right">
+                  <a>
+                    <i class="fi-x"></i>
+                  </a>
+                </div>
+                <div class="medium-6 columns">
+                  <label>Name
+                    <input type="text" required placeholder="First Last">
+                    <span class="form-error">
+                      Yo, you had better fill this out, it's required.
+                    </span>
+                  </label>
+                </div>
+                <div class="medium-6 columns">
+                  <label>Email
+                    <input type="email" required placeholder="email@domain.com">
+                    <span class="form-error">
+                      Yo, you had better fill this out, it's required.
+                    </span>
+                  </label>
+                </div>
+              </div>
+              <button type="submit" value="Submit" ng-click=tryAddUser() class="success button new-user-button">Submit new user</button>
+            </form>
+
+            <button ng-hide="shouldShowUserForm" ng-click=toggleUserForm() class="default button new-user-button"><i class="fi-plus"></i> Add new user</button>
+            </td>
+          </tr> -->
+          <tr class="user-row" ng-repeat="user in users">
+            <td>{{user.name}}</td>
+            <td>{{user.email}}</td>
+            <td><button ng-click=tryDeleteUser(user.name,user._id) class="alert button delete-user-button">Delete<button></td>
+          </tr>
+        </tbody>
+      </table> 
+
+    </div>   
+  </div>
+</div>

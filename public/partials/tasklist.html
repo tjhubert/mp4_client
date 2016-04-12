@@ -1,0 +1,71 @@
+<div class="list" id="task-list" ng-controller='TaskListController'>
+  
+  <div class="row">
+    <div class="columns small-12 small-centered text-right">
+      <button class="success button new-task-button"><i class="fi-plus"></i> Add new task</button>
+    </div>
+  </div>
+
+
+  <div class="row">
+
+    <div class="small-12 medium-6 columns small-centered">
+      <div class="small-9 columns">
+        <label for="order">Sort by</label>
+        <select ng-model="sortBy" ng-change="updateTasks()" ng-options="sort.name for sort in sorts"></select>
+      </div>
+
+      <fieldset class="small-3 columns">
+        <input type="radio" ng-model="sortOrder" ng-change="updateTasks()" value="1" name="order-ascending"><label for="orderAscending">Ascending</label><br/>
+        <input type="radio" ng-model="sortOrder" ng-change="updateTasks()" value="-1" name="order-ascending"><label for="orderAscending">Descending</label>
+      </fieldset>
+    </div>
+
+  </div>
+
+  <div class="row">
+      <fieldset class="small-12 medium-6 medium-centered columns">
+        Filter by task status: &nbsp;
+        <input type="radio" ng-model="taskStatus" ng-change="updateTasks()" value="false" name="task-status"><label for="taskStatus">Pending</label>
+        <input type="radio" ng-model="taskStatus" ng-change="updateTasks()" value="true" name="task-status"><label for="taskStatus">Completed</label>
+        <input type="radio" ng-model="taskStatus" ng-change="updateTasks()" value="all" name="task-status"><label for="taskStatus">All</label>
+      </fieldset>
+  </div>
+
+  
+  <div class="row">
+    <div class="columns small-6">
+      <button ng-show="shouldShowPreviousButton" ng-click="previousPage()" class="default button hollow new-task-button">Previous</button>
+    </div>
+    <div class="columns small-6 text-right">
+      <button ng-show="shouldShowNextButton" ng-click="nextPage()" class="default button hollow new-task-button">Next</button>
+    </div>
+  </div>
+  
+
+  <div class="row">
+    <div class="small-12 small-centered columns">
+      <table class="hover">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Deadline</th>
+            <th>Assignee</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="task-row" ng-repeat="task in tasks">
+            <td>{{task.name}}</td>
+            <td>{{getFormattedDate(task.deadline)}}</td>
+            <td>{{task.assignedUserName}}</td>
+            <td>{{task.completed ? "Completed" : "Pending"}}</td>
+            <td><button ng-click=tryDeleteTask(task.name,task._id) class="alert button delete-task-button">Delete<button></td>
+          </tr>
+        </tbody>
+      </table> 
+      
+    </div>   
+  </div>
+</div>

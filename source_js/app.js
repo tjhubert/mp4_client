@@ -14,9 +14,13 @@ app.config(['$routeProvider', function($routeProvider) {
     templateUrl: 'partials/settings.html',
     controller: 'SettingsController'
   }).
-  when('/llamalist', {
-    templateUrl: 'partials/llamalist.html',
-    controller: 'LlamaListController'
+  when('/userlist', {
+    templateUrl: 'partials/userlist.html',
+    controller: 'UserListController'
+  }).
+  when('/tasklist', {
+    templateUrl: 'partials/tasklist.html',
+    controller: 'TaskListController'
   }).
   otherwise({
     redirectTo: '/settings'
