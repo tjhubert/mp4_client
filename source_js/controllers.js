@@ -299,7 +299,7 @@ mp4Controllers.controller('TaskListController', ['$scope', '$http', 'Tasks', 'Us
 
 }]);
 
-mp4Controllers.controller('TaskDetailsController', ['$scope', '$http', 'Users', 'Tasks', '$routeParams' , function($scope, $http, Users, Tasks, $routeParams) {
+mp4Controllers.controller('TaskDetailsController', ['$scope', '$http', 'Users', 'Tasks', '$routeParams', '$location' , function($scope, $http, Users, Tasks, $routeParams, $location) {
 
   $scope.currentTask = {};
   var task_id = $routeParams.task_id;
@@ -352,6 +352,10 @@ mp4Controllers.controller('TaskDetailsController', ['$scope', '$http', 'Users', 
     changeCurrentTaskStatus(false);
   }
 
+  $scope.goTaskEditPage = function() {
+    $location.url("/taskedit/" + task_id);
+  }
+
   $scope.getFormattedDate = function (inputDate) {
       var date = new Date(inputDate);
 
@@ -375,9 +379,178 @@ mp4Controllers.controller('TaskDetailsController', ['$scope', '$http', 'Users', 
 }]);
 
 
-mp4Controllers.controller('TaskNewController', ['$scope', '$http', 'Users', 'Tasks', '$routeParams' , function($scope, $http, Users, Tasks, $routeParams) {
+mp4Controllers.controller('TaskNewController', ['$scope', '$http', 'Tasks', 'Users', '$routeParams' , function($scope, $http, Tasks, Users, $routeParams) {
+
+  var formElem = $("#task-form");
+  var formErrorFeedback = $("#form-error-feedback");
+  var formSuccessFeedback = $("#form-success-feedback");
+  var foundationForm = new Foundation.Abide(formElem, {  liveValidate : true });
+
+  function getAllUsers() {
+    Users.getAll().success(function (res){
+      $scope.users = res.data;
+    });
+  }
+
+  formElem.on("submit", function(event) {
+    event.preventDefault();
+    if (foundationForm.validateForm()) {
+      var data = {
+        name: $scope.newTaskName,
+        deadline: $scope.newTaskDeadline,
+        description: $scope.newTaskDescription,
+        assignedUser: $scope.newTaskAssignee ? $scope.newTaskAssignee._id : "",
+        assignedUserName: $scope.newTaskAssignee ? $scope.newTaskAssignee.name : "unassigned",
+        completed: false
+      }
+      Tasks.post(data)
+      .success(function (res) {
+        if (_.isArray($scope.newTaskAssignee.pendingTasks)) {
+          $scope.newTaskAssignee.pendingTasks.push(res.data._id)
+        } else {
+          $scope.newTaskAssignee.pendingTasks = [res.data._id]
+        }
+
+        Users.put($scope.newTaskAssignee._id, $scope.newTaskAssignee)
+        .success( function (res) {
+          $scope.addedTask = $scope.newTaskName;
+          $scope.newTaskName = "";
+          $scope.newTaskDeadline = "";
+          $scope.newTaskDescription = "";
+          $scope.newTaskAssignee = "";
+
+          formSuccessFeedback.show();
+          formErrorFeedback.hide();
+          console.log("Success updating associated user");
+        })
+        .error( function (res) {
+          console.log(res);
+          console.log("Error updating associated user");
+        })
+        
+      })
+      .error(function (res) {
+        console.log(res);
+        formSuccessFeedback.hide();
+        formErrorFeedback.show();
+      })
+    } else {
+      formSuccessFeedback.hide();
+    }
+
+  });
 
   function init() {
+    getAllUsers();
+  }
+
+  init();
+
+}]);
+
+mp4Controllers.controller('TaskEditController', ['$scope', '$http', 'Tasks', 'Users', '$routeParams' , function($scope, $http, Tasks, Users, $routeParams) {
+
+  var formElem = $("#task-form");
+  var formErrorFeedback = $("#form-error-feedback");
+  var formSuccessFeedback = $("#form-success-feedback");
+  var foundationForm = new Foundation.Abide(formElem, {  liveValidate : true });
+  var task_id = $routeParams.task_id;
+  var originalTaskAssignee;
+
+  function getAllUsers() {
+    Users.getAll().success(function (res){
+      $scope.users= [{"_id":"","name":"unassigned"}].concat(res.data);
+      Tasks.getOne(task_id).success(function (res){
+        $scope.currentTask = res.data;
+        $scope.currentTaskAssignee = _.findWhere($scope.users, {"_id":$scope.currentTask.assignedUser})
+        originalTaskAssignee = $scope.currentTaskAssignee;
+      });
+    });
+  }
+
+  formElem.on("submit", function(event) {
+    event.preventDefault();
+    if (foundationForm.validateForm()) {
+      var editedTask = $scope.currentTask;
+
+      editedTask.completed = editedTask.completed === "1" ? true : false;
+      editedTask.assignedUser = $scope.currentTaskAssignee._id;
+      editedTask.assignedUserName = $scope.currentTaskAssignee.name;
+
+      if (!originalTaskAssignee.completed && editedTask.completed || originalTaskAssignee._id !== editedTask.assignedUser) {
+        var userPendingTasks = originalTaskAssignee.pendingTasks;
+
+        if (_.isArray(userPendingTasks)) {
+          originalTaskAssignee.pendingTasks = _.without(userPendingTasks, _.findWhere(userPendingTasks, editedTask._id));
+        } else if ($scope.currentUser.pendingTasks === editedTask._id) {
+          originalTaskAssignee.pendingTasks = [];
+        }
+
+        Users.put(originalTaskAssignee._id, originalTaskAssignee)
+        .success(function (res) {
+          console.log("success removing old pending task")
+        })
+        .error(function (res) {
+          console.log(res);
+          console.log("error removing old pending task")
+        })
+      }
+
+      if (!editedTask.completed && originalTaskAssignee._id !== editedTask._id) {
+        var userPendingTasks = $scope.currentTaskAssignee.pendingTasks;
+
+        if (_.isArray(userPendingTasks) && !_.contains(userPendingTasks, editedTask._id)) {
+          $scope.currentTaskAssignee.pendingTasks.push(editedTask._id);
+        } else if ($scope.currentTaskAssignee.pendingTasks !== editedTask._id) {
+          $scope.currentTaskAssignee.pendingTasks = [editedTask._id];
+        }
+
+        Users.put($scope.currentTaskAssignee._id, $scope.currentTaskAssignee)
+        .success(function (res) {
+          console.log("success adding new pending task")
+          originalTaskAssignee = $scope.currentTaskAssignee;
+        })
+        .error(function (res) {
+          console.log(res);
+          console.log("error adding new pending task")
+        })
+      }
+
+      if (originalTaskAssignee.completed && !editedTask.completed || originalTaskAssignee._id !== editedTask._id) {
+        var userPendingTasks = originalTaskAssignee.pendingTasks;
+
+        if (_.isArray(userPendingTasks)) {
+          originalTaskAssignee.pendingTasks = _.without(userPendingTasks, _.findWhere(userPendingTasks, editedTask._id));
+        } else if ($scope.currentUser.pendingTasks === editedTask._id) {
+          originalTaskAssignee.pendingTasks = [];
+        }
+
+        Users.put(originalTaskAssignee._id, originalTaskAssignee)
+        .success(function (res) {
+          console.log("success removing old pending task")
+        })
+        .error(function (res) {
+          console.log(res);
+          console.log("error removing old pending task")
+        })
+      }
+
+      Tasks.put(editedTask._id, editedTask)
+      .success(function (res) {
+        formSuccessFeedback.show();
+        formErrorFeedback.hide();
+      })
+      .error(function (res) {
+        console.log(res);
+        formSuccessFeedback.hide();
+        formErrorFeedback.show();
+      })
+
+    }
+  });
+
+  function init() {
+    getAllUsers();
   }
 
   init();

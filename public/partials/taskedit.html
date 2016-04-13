@@ -1,6 +1,6 @@
 <div class="row">
   <div class="columns small-12 small-centered">
-      <h1>New Task</h1>
+      <h1>Edit Task</h1>
   </div>
 </div>
 
@@ -12,39 +12,46 @@
   </div>
 
   <div id="form-success-feedback" data-abide-success class="success callout" style="display: none;">
-    <p><i class="fi-check"></i> Task {{addedTask}} has been successfully added.</p>
+    <p><i class="fi-check"></i> Task {{currentTask.name}} has been successfully updated.</p>
   </div>
   <div class="row">
     <div class="small-12 medium-6 columns">
       <label>Name<span class="required-field"> *required</span>
-        <input type="text" ng-model="newTaskName" required>
+        <input type="text" ng-model="currentTask.name" required>
       </label>
     </div>
 
     <div class="small-12 medium-6 columns">
       <label>Description
-        <input type="text" ng-model="newTaskDescription">
+        <input type="text" ng-model="currentTask.description">
       </label>
     </div>
 
     <div class="small-12 medium-6 columns">
       <label>Deadline<span class="required-field"> *required</span>
         <datepicker>
-          <input ng-model="newTaskDeadline" type="text" required>
+          <input ng-model="currentTask.deadline" type="text" required>
         </datepicker>
       </label>
     </div>
 
     <div class="small-12 medium-6 columns">
       <label>Assignee 
-        <select ng-model="newTaskAssignee" ng-options="user.name for user in users"></select>
+        <select ng-model="currentTaskAssignee" ng-options="user.name for user in users"></select>
+      </label>
+    </div>
+
+    <div class="small-12 medium-6 columns">
+      <label>Task status:&nbsp;
+        <input type="radio" ng-model="currentTask.completed" value="1" name="task-status"><label>Completed</label>
+        <input type="radio" ng-model="currentTask.completed" value="0" name="task-status"><label>Pending</label>
       </label>
     </div>
     
   </div>
   <div class="row">
     <fieldset class="large-6 columns">
-      <button class="success button" type="submit" value="Submit">Submit new task</button>
+      <button class="success button" type="submit" value="Submit">Update task</button>
     </fieldset>
   </div>
 </form>

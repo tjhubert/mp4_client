@@ -16,3 +16,9 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+
+.required-field {
+  font-style: italic;
+  color: $alert-color;
+  font-size: $small-font-size;
+}

@@ -19,6 +19,9 @@ mp4Services.factory('Users', function($http, $window) {
     // delete $http.defaults.headers.delete['Content-type'];
     return {
         getAll : function(query) {
+            if (typeof query === 'undefined') {
+                query = "";
+            }
             return $http.get(baseUrl+'/api/users' + query);
         },
         getOne : function(user_id) {
@@ -71,7 +74,7 @@ mp4Services.factory('Tasks', function($http, $window) {
             return $http.get(baseUrl+'/api/tasks/' + task_id);
         },
         post : function(data) {
-            return $http.post(baseUrl+'/api/tasks', data);
+            return $http.post(baseUrl+'/api/tasks', $.param(data), formHeader );
         },
         delete : function(task_id) {
             return $http.delete(baseUrl+'/api/tasks/' + task_id);
