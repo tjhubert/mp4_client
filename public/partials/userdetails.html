@@ -1,0 +1,83 @@
+<div class="row">
+  <div class="columns small-12 small-centered">
+      <h1>User Details</h1>
+  </div>
+</div>
+
+<hr/>
+
+<div class="row">
+  <div class="small-12 medium-6 columns"><h2>{{currentUser.name}}</h2></div>
+  <div class="small-12 medium-6 columns"><h2>{{currentUser.email}}</h2></div>
+</div>
+
+
+<div class="row" ng-show="pendingTasks.length">
+  <div class="small-12 columns">
+    <h5>Pending Tasks</h5>
+  </div>
+  <div class="small-12 small-centered columns">
+    <table class="hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Deadline</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-click="goTaskDetailsPage(task._id)"class="task-row" ng-repeat="task in pendingTasks">
+          <td>{{task.name}}</td>
+          <td>{{getFormattedDate(task.deadline)}}</td>
+          <td><button ng-click="markTaskAsCompleted(task); $event.stopPropagation()" class="success button"><i class="fi-check"></i>&nbsp;Mark as completed</button></td>
+        </tr>
+      </tbody>
+    </table> 
+  </div>   
+</div>
+
+<div class="row" ng-hide="pendingTasks.length">
+  <div class="small-12 columns">
+    <h3>No pending task found!</h3>
+  </div>
+</div>
+
+<div class="row" ng-hide="showCompletedTasksButtonClicked">
+  <div class="small-3 small-centered columns">
+    <button ng-click=getCompletedTasks() class="default button">Show Completed Tasks</button>
+  </div>
+</div>
+
+<div class="row" ng-show="completedTasks.length">
+  <div class="small-12 columns">
+    <h5>Completed Tasks</h5>
+  </div>
+  <div class="small-12 small-centered columns">
+    <table class="hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Deadline</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-click="goTaskDetailsPage(task._id)" class="task-row" ng-repeat="task in completedTasks">
+          <td>{{task.name}}</td>
+          <td>{{getFormattedDate(task.deadline)}}</td>
+        </tr>
+      </tbody>
+    </table> 
+  </div>   
+</div>
+
+<div class="row" ng-show="showCompletedTasksButtonClicked && (completedTasks.length === 0)">
+  <div class="small-12 columns">
+    <h3>No completed task found!</h3>
+  </div>
+</div>
+
+<div class="row" ng-show="showCompletedTasksButtonClicked">
+  <div class="small-3 small-centered columns">
+    <button ng-click=hideCompletedTasks() class="default button">Hide Completed Tasks</button>
+  </div>
+</div>

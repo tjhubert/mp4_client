@@ -1,11 +1,17 @@
 <div class="list" id="task-list" ng-controller='TaskListController'>
-  
   <div class="row">
-    <div class="columns small-12 small-centered text-right">
-      <button class="success button new-task-button"><i class="fi-plus"></i> Add new task</button>
+    <div class="columns small-12 small-centered">
+      <div class="columns small-12 medium-6 ">
+        <h1>Task List</h1>
+      </div>
+      
+      <div class="columns small-12 medium-6 text-right">
+        <button ng-click="goAddTaskPage()" class="success button new-task-button"><i class="fi-plus"></i> Add new task</button>
+      </div>
     </div>
   </div>
 
+<hr/>
 
   <div class="row">
 
@@ -24,7 +30,7 @@
   </div>
 
   <div class="row">
-      <fieldset class="small-12 medium-6 medium-centered columns">
+      <fieldset class="small-12 medium-6 small-centered columns">
         Filter by task status: &nbsp;
         <input type="radio" ng-model="taskStatus" ng-change="updateTasks()" value="false" name="task-status"><label for="taskStatus">Pending</label>
         <input type="radio" ng-model="taskStatus" ng-change="updateTasks()" value="true" name="task-status"><label for="taskStatus">Completed</label>
@@ -42,6 +48,7 @@
     </div>
   </div>
   
+  <br/>
 
   <div class="row">
     <div class="small-12 small-centered columns">
@@ -56,16 +63,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="task-row" ng-repeat="task in tasks">
+          <tr ng-click="goTaskDetailsPage(task._id)" class="task-row" ng-repeat="task in tasks">
             <td>{{task.name}}</td>
             <td>{{getFormattedDate(task.deadline)}}</td>
             <td>{{task.assignedUserName}}</td>
             <td>{{task.completed ? "Completed" : "Pending"}}</td>
-            <td><button ng-click=tryDeleteTask(task.name,task._id) class="alert button delete-task-button">Delete<button></td>
+            <td><button ng-click="tryDeleteTask(task); $event.stopPropagation()" class="alert button delete-task-button">Delete<button></td>
           </tr>
         </tbody>
       </table> 
       
     </div>   
   </div>
+
 </div>

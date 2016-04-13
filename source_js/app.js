@@ -2,14 +2,6 @@ var app = angular.module('mp4', ['ngRoute', 'mp4Controllers', 'mp4Services']);
 
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
-    when('/firstview', {
-    templateUrl: 'partials/firstview.html',
-    controller: 'FirstController'
-  }).
-  when('/secondview', {
-    templateUrl: 'partials/secondview.html',
-    controller: 'SecondController'
-  }).
   when('/settings', {
     templateUrl: 'partials/settings.html',
     controller: 'SettingsController'
@@ -18,9 +10,29 @@ app.config(['$routeProvider', function($routeProvider) {
     templateUrl: 'partials/userlist.html',
     controller: 'UserListController'
   }).
+  when('/userdetails/:user_id', {
+    templateUrl: 'partials/userdetails.html',
+    controller: 'UserDetailsController'
+  }).
+  when('/usernew/', {
+    templateUrl: 'partials/usernew.html',
+    controller: 'UserNewController'
+  }).
   when('/tasklist', {
     templateUrl: 'partials/tasklist.html',
     controller: 'TaskListController'
+  }).
+  when('/taskdetails/:task_id', {
+    templateUrl: 'partials/taskdetails.html',
+    controller: 'TaskDetailsController'
+  }).
+  when('/tasknew/', {
+    templateUrl: 'partials/tasknew.html',
+    controller: 'TaskNewController'
+  }).
+  when('/taskedit/:task_id', {
+    templateUrl: 'partials/taskedit.html',
+    controller: 'TaskEditController'
   }).
   otherwise({
     redirectTo: '/settings'

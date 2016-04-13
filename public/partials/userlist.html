@@ -1,10 +1,18 @@
 <div class="list" id="user-list" ng-controller='UserListController'>
   <div class="row">
-    <div class="columns small-12 small-centered text-right">
-      <button ng-hide="shouldShowTaskForm" class="success button new-task-button"><i class="fi-plus"></i> Add new user</button>
+    <div class="columns small-12 small-centered">
+      <div class="columns small-12 medium-6 ">
+        <h1>User List</h1>
+      </div>
+      
+      <div class="columns small-12 medium-6 text-right">
+        <button ng-click="goAddUserPage()" class="success button new-task-button"><i class="fi-plus"></i> Add new user</button>
+      </div>
     </div>
   </div>
-
+  
+  <hr/>
+  
   <div class="row">
     <div class="small-12 small-centered columns">
       <table class="hover">
@@ -16,7 +24,23 @@
           </tr>
         </thead>
         <tbody>
-          <!-- <tr>
+          
+          <tr ng-click="goUserDetailsPage(user._id)" class="user-row" ng-repeat="user in users">
+            <td>{{user.name}}</td>
+            <td>{{user.email}}</td>
+            <td><button ng-click="tryDeleteUser(user.name,user._id); $event.stopPropagation()" class="alert button delete-user-button">Delete<button></td>
+          </tr>
+        </tbody>
+      </table> 
+
+    </div>   
+  </div>
+</div>
+
+
+
+
+<!-- <tr>
             <td colspan="3">
             <form data-abide ng-show="shouldShowUserForm">
               <div data-abide-error class="alert callout" style="display: none;">
@@ -51,14 +75,3 @@
             <button ng-hide="shouldShowUserForm" ng-click=toggleUserForm() class="default button new-user-button"><i class="fi-plus"></i> Add new user</button>
             </td>
           </tr> -->
-          <tr class="user-row" ng-repeat="user in users">
-            <td>{{user.name}}</td>
-            <td>{{user.email}}</td>
-            <td><button ng-click=tryDeleteUser(user.name,user._id) class="alert button delete-user-button">Delete<button></td>
-          </tr>
-        </tbody>
-      </table> 
-
-    </div>   
-  </div>
-</div>

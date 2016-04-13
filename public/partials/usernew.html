@@ -1,0 +1,42 @@
+<div class="row">
+  <div class="columns small-12 small-centered">
+      <h1>New User</h1>
+  </div>
+</div>
+
+<hr/>
+
+<form data-abide novalidate id="user-form">
+  <div id="form-error-feedback" data-abide-error class="alert callout" style="display: none;">
+    <p><i class="fi-alert"></i> There are some errors in your form.</p>
+  </div>
+
+  <div id="form-success-feedback" data-abide-success class="success callout" style="display: none;">
+    <p><i class="fi-check"></i> {{addedUser}} has been successfully added.</p>
+  </div>
+  <div class="row">
+    <div class="small-12 medium-6 columns">
+      <label>Name
+        <input type="text" placeholder="First Last" aria-describedby="exampleHelpText" required ng-model="newUserName">
+        <span class="form-error">
+          Name is required.
+        </span>
+      </label>
+    </div>
+
+    <div class="small-12 medium-6 columns">
+      <label>Email
+        <input id="user-email" type="text" placeholder="email@domain.com" aria-describedby="exampleHelpText" required pattern="email" ng-model="newUserEmail">
+        <span id="user-email-error" class="form-error">
+          Email is required.
+        </span>
+      </label>
+    </div>
+    
+  </div>
+  <div class="row">
+    <fieldset class="large-6 columns">
+      <button class="success button" type="submit" value="Submit">Submit new user</button>
+    </fieldset>
+  </div>
+</form>
